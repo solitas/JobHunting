@@ -1,0 +1,29 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:convert="clr-namespace:JobHunting.Convert"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    xmlns:model="clr-namespace:JobHunting.Model">
+
+    <ObjectDataProvider x:Key="RecruitStepProvider"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type system:Enum}">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="model:ScreeingStep"/>
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+    <ObjectDataProvider x:Key="RecruitTypeProvider"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type system:Enum}">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="model:RecruitType"/>
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+
+    
+    <convert:VisibleConverter x:Key="VisibleConverter"/>
+    <convert:ReverseVisibleConverter x:Key="ReverseVisibleConverter"/>
+    <convert:ReverseBooleanConverter x:Key="ReverseBooleanConverter"/>
+    <convert:NullBooleanConverter x:Key="NullBooleanConverter"/>
+    <convert:TypeEnumConverter x:Key="RecruitTypeEnumConverter"/>
+    <convert:StepEnumConverter x:Key="RecruitStepEnumConverter"/>
+</ResourceDictionary>

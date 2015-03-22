@@ -8,49 +8,94 @@
         <Border BorderBrush="#FF212121" BorderThickness="1" CornerRadius="1.5" Background="#FF2C2A2A"/>
         <Grid Margin="10,35,10,10">
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition Height="14*"/>
+                <RowDefinition Height="45*"/>
+                <RowDefinition Height="574*"/>
+                <RowDefinition Height="56*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="134*"/>
-                <ColumnDefinition Width="170*"/>
-                <ColumnDefinition Width="31*"/>
+                <ColumnDefinition Width="204*"/>
+                <ColumnDefinition Width="204*"/>
+                <ColumnDefinition Width="509*"/>
+                <ColumnDefinition Width="93*"/>
             </Grid.ColumnDefinitions>
-            <Border BorderBrush="#FF212121" BorderThickness="1" Background="#FF857D7D" Grid.ColumnSpan="3" Grid.RowSpan="2"/>
-            <ListView Background="#FF212121" BorderBrush="#FF212121" Grid.Row="1"/>
-            <Grid x:Name="RecruitAddPanel" Height="300" VerticalAlignment="Top" Grid.RowSpan="2">
+            <Border BorderBrush="#FF212121" BorderThickness="1" Background="#FF857D7D" Grid.ColumnSpan="4" Grid.RowSpan="3"/>
+            <ListView Background="#FF212121" BorderBrush="#FF212121" Grid.Row="1" Grid.ColumnSpan="2"/>
+            <Grid x:Name="RecruitAddPanel" Height="300" VerticalAlignment="Top" Grid.RowSpan="2" 
+                  Visibility ="{Binding ViewMode, Converter={StaticResource ReverseVisibleConverter}}" Grid.ColumnSpan="2">
+            	<Grid.ColumnDefinitions>
+            		<ColumnDefinition/>
+            		<ColumnDefinition/>
+            	</Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="41*"/>
-                    <RowDefinition Height="259*"/>
+                    <RowDefinition Height="209*"/>
+                    <RowDefinition Height="50*"/>
                 </Grid.RowDefinitions>
-                <Border BorderThickness="0" Background="#FFB6B6B6" Grid.RowSpan="2"/>
-                <Border BorderThickness="0" Background="#FF247469">
+                <Border BorderThickness="0" Background="#FFB6B6B6" Grid.RowSpan="3" Grid.ColumnSpan="2"/>
+                <Border BorderThickness="0" Background="#FF247469" Grid.ColumnSpan="2">
                     <Label Content="New" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFE8E6E6" FontSize="16"/>
                 </Border>
-                <StackPanel Grid.Row="1">
-                    <xctk:WatermarkTextBox TextWrapping="Wrap" Watermark="회사명을 적어주세요" Margin="10,5" Height="35" VerticalContentAlignment="Center"/>
-                    <xctk:WatermarkTextBox TextWrapping="Wrap" Watermark="채용사이트를 적어주세요" Margin="10,5" Height="35" VerticalContentAlignment="Center"/>
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+                    <xctk:WatermarkTextBox TextWrapping="Wrap" Watermark="회사명을 적어주세요" Margin="10,5" Height="35" VerticalContentAlignment="Center" Text="{Binding AddRecruitment.Company}"/>
+                    <xctk:WatermarkTextBox TextWrapping="Wrap" Watermark="채용사이트를 적어주세요" Margin="10,5" Height="35" VerticalContentAlignment="Center" Text="{Binding AddRecruitment.Site}"/>
                     <Grid Margin="10,5" Height="35">
-                        <xctk:DateTimePicker Watermark="시작일" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Margin="0" HorizontalAlignment="Left" Width="150"/>
-                        <xctk:DateTimePicker Watermark="종료일" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" HorizontalAlignment="Right" Margin="0" Width="150"/>
+                        <xctk:DateTimePicker Watermark="시작일" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Margin="0" HorizontalAlignment="Left" Width="150" Value="{Binding AddRecruitment.StartDate}"/>
+                        <xctk:DateTimePicker Watermark="종료일" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" HorizontalAlignment="Right" Margin="0" Width="150" Value="{Binding AddRecruitment.EndDate}"/>
                     </Grid>
-                    <StackPanel Orientation="Horizontal" Margin="10,5" HorizontalAlignment="Center">
-                        <RadioButton Content="공개채용" Foreground="#FF424242" GroupName="recruit_type"/>
-                        <RadioButton Content="수시채용" Foreground="#FF424242" GroupName="recruit_type"/>
-                        <RadioButton Content="경력채용" Foreground="#FF424242" GroupName="recruit_type"/>
-                        <RadioButton Content="인턴채용" Foreground="#FF424242" GroupName="recruit_type"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="10,5" HorizontalAlignment="Center">
-                        <RadioButton Content="서류전형" Foreground="#FF424242" GroupName="model_type"/>
-                        <RadioButton Content="면접전형" Foreground="#FF424242" GroupName="model_type"/>
-                        <RadioButton Content="인적성전형" Foreground="#FF424242" GroupName="model_type"/>
-                    </StackPanel>
+                    <ListBox ItemsSource="{Binding Source={StaticResource RecruitTypeProvider}}"
+                             SelectedItem="{Binding RecruitType}">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="4" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                            <RadioButton Content="{Binding Converter={StaticResource RecruitTypeEnumConverter}}"
+                                                IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSelected}"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+                    <ListBox ItemsSource="{Binding Source={StaticResource RecruitStepProvider}}"
+                             SelectedItem="{Binding ScreeningStep}">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                            <RadioButton Content="{Binding Converter={StaticResource RecruitStepEnumConverter}}"
+                                                IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSelected}"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
                 </StackPanel>
+                <Button Content="저장" Grid.Row="2" Grid.Column="0" Command="{Binding RecruitAdditionCommand}"/>
+                <Button Content="취소" Grid.Row="2" Grid.Column="1" Command="{Binding RecruitCancelCommand}"/>
             </Grid>
-            <Grid>
-                <Button Content="New" Background="#FF377A55" Foreground="#FFE0E0E0" BorderThickness="0.5" BorderBrush="#FF23593B"/>
+            <Grid Grid.ColumnSpan="2">
+                <Button Content="New"
+                        Visibility="{Binding ViewMode, Converter={StaticResource VisibleConverter}}"
+                        Background="#FF377A55"
+                        Foreground="#FFE0E0E0" 
+                        BorderThickness="0.5" 
+                        BorderBrush="#FF23593B"
+                        Command="{Binding RecruitPrepareAddCommand}"/>
             </Grid>
-            <ListView Margin="1" Grid.Row="0" Grid.Column="1" BorderBrush="{x:Null}" Background="{x:Null}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" >
+            <ListView Margin="1" Grid.Row="0" Grid.Column="2" BorderBrush="{x:Null}" Background="{x:Null}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"  IsEnabled="{Binding ViewMode}" >
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
@@ -59,7 +104,7 @@
                 <Button Content="1"/>
                 <Button Content="2"/>
             </ListView>
-            <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
+            <Grid Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="2"  IsEnabled="{Binding ViewMode, Converter={StaticResource NullBooleanConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="163*"/>
                     <ColumnDefinition Width="38*"/>
@@ -80,7 +125,9 @@
                     <control:EditableTextBlock TextWrapping="Wrap" Text="EditableTextBlock" Foreground="#FFF7F7F7" FontSize="26.667" Margin="5"/>
                 </Viewbox>
             </Grid>
-            <Button Content="+" Grid.Column="2" Margin="5"/>
+            <Button Content="+" Grid.Column="3" Margin="5"  IsEnabled="{Binding ViewMode}"/>
+            <Button Content="수정" Margin="0" Grid.Row="2" Command="{Binding RecruitModifyCommand}"  IsEnabled="{Binding ViewMode}"/>
+            <Button Content="삭제" Margin="0" Grid.Row="2" Grid.Column="1" Command="{Binding RecruitDeleteCommand}"  IsEnabled="{Binding ViewMode}"/>
         </Grid>
     </Grid>
 </Window>
