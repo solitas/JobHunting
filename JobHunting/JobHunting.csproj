@@ -71,6 +71,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModel\RelayCommand.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -81,6 +83,11 @@
     </Compile>
     <Compile Include="Control\EditableTextBlock.cs" />
     <Compile Include="Control\EditableTextBlockAdorner.cs" />
+    <Compile Include="Convert\AppiontmentsConverter.cs" />
+    <Compile Include="Convert\DayNameConverter.cs" />
+    <Compile Include="Convert\NullBooleanConverter.cs" />
+    <Compile Include="Convert\TypeEnumConverter.cs" />
+    <Compile Include="Convert\VisibleConverter.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
