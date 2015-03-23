@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using JobHunting.Data;
 using JobHunting.ViewModel;
 
 namespace JobHunting
@@ -24,7 +25,8 @@ namespace JobHunting
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainViewModel();
+            IRepository repository = new Repository();
+            DataContext = new MainViewModel(repository);
         }
     }
 }

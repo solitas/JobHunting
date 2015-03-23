@@ -76,5 +76,20 @@ namespace JobHunting.Model
         {
             Questions = new ObservableCollection<Question>();
         }
+
+        public Recruitment(Recruitment recruitment) : this()
+        {
+            _recruitType = recruitment.RecruitType;
+            _company = recruitment.Company;
+            _startDate = recruitment.StartDate;
+            _endDate = recruitment.EndDate;
+            _site = recruitment.Site;
+            _screeningStep = recruitment.ScreeingStep;
+            
+            foreach (var question in recruitment.Questions)
+            {
+                Questions.Add(new Question(question));    
+            }
+        }
     }
 }

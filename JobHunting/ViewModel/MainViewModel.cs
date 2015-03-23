@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
+using JobHunting.Data;
 using JobHunting.Model;
 
 namespace JobHunting.ViewModel
@@ -13,9 +13,9 @@ namespace JobHunting.ViewModel
     public class MainViewModel : ViewModelBase
     {
         #region Fields
-
+        private IRepository _repository;
         private Recruitment _selectedRecruitment;
-        private Recruitment _AddRecruitment;
+        private Recruitment _addRecruitment;
         private Question _selectedQuestion;
         private bool _viewMode;
         private bool _isModify;
@@ -25,13 +25,28 @@ namespace JobHunting.ViewModel
         #endregion
 
         #region Properties
-        public ObservableCollection<Recruitment> Recruitments { set; get; }
+
+        private ObservableCollection<Recruitment> _recruitments; 
+        public ObservableCollection<Recruitment> Recruitments
+        {
+            set
+            {
+                _recruitments = value;
+                NotifyPropertyChanged("Recruitments");
+            }
+            get
+            {
+                return _recruitments;
+            }
+        }
 
         public Recruitment SelectedRecruitment
         {
             set
             {
                 _selectedRecruitment = value;
+                if (_selectedRecruitment.Questions.Count > 0)
+                    SelectedQuestion = _selectedRecruitment.Questions[0];
                 NotifyPropertyChanged("SelectedRecruitment");
 
             }
@@ -42,10 +57,10 @@ namespace JobHunting.ViewModel
         {
             set
             {
-                _AddRecruitment = value;
+                _addRecruitment = value;
                 NotifyPropertyChanged("AddRecruitment");
             }
-            get { return _AddRecruitment; }
+            get { return _addRecruitment; }
         }
 
         public Question SelectedQuestion
@@ -109,13 +124,19 @@ namespace JobHunting.ViewModel
 
         #region Constructor
 
-        public MainViewModel()
+        public MainViewModel(IRepository repository)
         {
-            Recruitments = new ObservableCollection<Recruitment>();
+            _repository = repository;
+            
             ViewMode = true;
             AddRecruitment = new Recruitment();
+            Recruitments = new ObservableCollection<Recruitment>();
+            LoadRecruitment();
         }
-
+        private void LoadRecruitment()
+        {
+            Recruitments = _repository.LoadRecruitments().ToObservableCollection();
+        }
         #endregion
 
         #region Commands
@@ -127,7 +148,7 @@ namespace JobHunting.ViewModel
         private RelayCommand _recruitModifyCommand;
         private RelayCommand _questionAdditionCommand;
         private RelayCommand _questionDeleteCommand;
-        
+        private RelayCommand _questionSaveCommand;
         public ICommand RecruitPrepareAddCommand
         {
             get
@@ -176,6 +197,10 @@ namespace JobHunting.ViewModel
             }
         }
 
+        public ICommand QuestionSaveCommand
+        {
+            get { return _questionSaveCommand ?? (_questionSaveCommand = new RelayCommand(QuestionSaveHandler)); }
+        }
         #endregion
 
         #region Command Handler
@@ -199,28 +224,67 @@ namespace JobHunting.ViewModel
             if (_isModify)
             {
                 _isModify = false;
+                
             }
             else
             {
-
+                Recruitment newRecruitment = new Recruitment(_addRecruitment); // 복사
+                AddRecruitment = new Recruitment();
+                Recruitments.Add(newRecruitment);
+                _repository.SaveRecruitments(_recruitments);
             }
         }
         private void RecruitDeleteHandler()
         {
-
+            if (_selectedRecruitment != null)
+            {
+                Recruitments.Remove(_selectedRecruitment);
+                _selectedRecruitment = null;
+                _repository.SaveRecruitments(_recruitments);
+            }
         }
+
         private void RecruitModifyHandler()
         {
+            if (SelectedRecruitment == null)
+            {
+                MessageBox.Show("Not selected item");
+                return;
+            }
+
             ViewMode = false;
             _isModify = true;
+            AddRecruitment = SelectedRecruitment;
+
+            _repository.SaveRecruitments(_recruitments);
         }
         private void QuestionAdditionHandler()
         {
+            if (_selectedRecruitment == null)
+            {
+                return;
+            }
+            int index = _selectedRecruitment.Questions.Count;
 
+            Question newQuestion = new Question(index+1);
+            _selectedRecruitment.Questions.Add(newQuestion);
+            SelectedQuestion = newQuestion;
+
+            _repository.SaveRecruitments(_recruitments);
         }
+
+        private void QuestionSaveHandler()
+        {
+            if (_selectedRecruitment == null)
+            {
+                return;
+            }
+            _repository.SaveRecruitments(_recruitments);
+        }
+
         private void QuestionDeleteHandler()
         {
-
+            _repository.SaveRecruitments(_recruitments);
         }
         #endregion
 
