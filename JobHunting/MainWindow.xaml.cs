@@ -28,5 +28,20 @@ namespace JobHunting
             IRepository repository = new Repository();
             DataContext = new MainViewModel(repository);
         }
+
+        private void Border_MouseMove(object sender, MouseEventArgs e)
+        {
+            DragMove();
+        }
+
+        private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }
