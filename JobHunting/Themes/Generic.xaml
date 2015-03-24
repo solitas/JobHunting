@@ -8,7 +8,7 @@
                             MethodName="GetValues"
                             ObjectType="{x:Type system:Enum}">
         <ObjectDataProvider.MethodParameters>
-            <x:Type TypeName="model:ScreeingStep"/>
+            <x:Type TypeName="model:ScreeningStep"/>
         </ObjectDataProvider.MethodParameters>
     </ObjectDataProvider>
     <ObjectDataProvider x:Key="RecruitTypeProvider"
@@ -26,7 +26,7 @@
     <convert:NullBooleanConverter x:Key="NullBooleanConverter"/>
     <convert:TypeEnumConverter x:Key="RecruitTypeEnumConverter"/>
     <convert:StepEnumConverter x:Key="RecruitStepEnumConverter"/>
-    
+    <convert:RecruitmentConverter x:Key="RecruitmentConverter"/>
     <Style x:Key="TextblockStyle" TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="Red" />
     </Style>

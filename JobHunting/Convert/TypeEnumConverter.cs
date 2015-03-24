@@ -40,7 +40,7 @@ namespace JobHunting.Convert
     }
     public class StepEnumConverter : IValueConverter
     {
-        private string GetEnumDescription(ScreeingStep enumObj)
+        private string GetEnumDescription(ScreeningStep enumObj)
         {
             FieldInfo fieldInfo = enumObj.GetType().GetField(enumObj.ToString());
 
@@ -59,7 +59,7 @@ namespace JobHunting.Convert
 
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            ScreeingStep myEnum = (ScreeingStep)value;
+            ScreeningStep myEnum = (ScreeningStep)value;
             string description = GetEnumDescription(myEnum);
             return description;
         }

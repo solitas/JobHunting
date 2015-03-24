@@ -19,7 +19,7 @@ namespace JobHunting.Model
         Career
     }
 
-    public enum ScreeingStep
+    public enum ScreeningStep
     {
         [Description("서류전형")]
         Paper,

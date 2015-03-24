@@ -11,7 +11,7 @@ namespace JobHunting.Model
         private DateTime _startDate;
         private DateTime _endDate;
         private RecruitType _recruitType;
-        private ScreeingStep _screeningStep;
+        private ScreeningStep _screeningStep;
 
         public string Company
         {
@@ -60,7 +60,7 @@ namespace JobHunting.Model
             }
             get { return _recruitType; }
         }
-        public ScreeingStep ScreeingStep
+        public ScreeningStep ScreeningStep
         {
             set
             {
@@ -84,7 +84,7 @@ namespace JobHunting.Model
             _startDate = recruitment.StartDate;
             _endDate = recruitment.EndDate;
             _site = recruitment.Site;
-            _screeningStep = recruitment.ScreeingStep;
+            _screeningStep = recruitment.ScreeningStep;
             
             foreach (var question in recruitment.Questions)
             {

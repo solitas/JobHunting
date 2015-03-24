@@ -19,7 +19,7 @@ namespace JobHunting.ViewModel
         private Question _selectedQuestion;
         private bool _viewMode;
         private bool _isModify;
-        private ScreeingStep _screeingStep;
+        private ScreeningStep _screeingStep;
         private RecruitType _recruitType;
 
         #endregion
@@ -100,21 +100,19 @@ namespace JobHunting.ViewModel
             {
                 if (value != _recruitType)
                 {
-                    AddRecruitment.RecruitType = value;
                     _recruitType = value;
                     NotifyPropertyChanged("RecruitType");
                 }
             }
         }
 
-        public ScreeingStep ScreeningStep
+        public ScreeningStep ScreeningStep
         {
             get { return _screeingStep; }
             set
             {
                 if (value != _screeingStep)
                 {
-                    AddRecruitment.ScreeingStep = value;
                     _screeingStep = value;
                     NotifyPropertyChanged("ScreeningStep");
                 }
@@ -205,48 +203,57 @@ namespace JobHunting.ViewModel
 
         #region Command Handler
 
-        private void RecruitPrepareAddHandler()
+        private void RecruitPrepareAddHandler(object o)
         {
             ViewMode = false;
             InitializeAddRecruitment();
         }
 
-        private void RecruitCancelHandler()
+        private void RecruitCancelHandler(object o)
         {
             ViewMode = true;
             InitializeAddRecruitment();
+            if (_isModify == true)
+            {
+                _isModify = false;
+            }
         }
 
-        private void RecruitAdditionHandler()
+        private void RecruitAdditionHandler(object param)
         {
             ViewMode = true;
 
+            Recruitment newRecruitment = param as Recruitment;
+
             if (_isModify)
             {
+                if (newRecruitment != null)
+                {
+                    _selectedRecruitment.Company = newRecruitment.Company;
+                    _selectedRecruitment.Site = newRecruitment.Site;
+                    _selectedRecruitment.StartDate = newRecruitment.StartDate;
+                    _selectedRecruitment.EndDate = newRecruitment.EndDate;
+                    _selectedRecruitment.RecruitType = RecruitType;
+                    _selectedRecruitment.ScreeningStep = ScreeningStep;
+                }
                 _isModify = false;
-                
             }
             else
             {
-                Recruitment newRecruitment = new Recruitment(_addRecruitment); // 복사
-                AddRecruitment = new Recruitment();
-                Recruitments.Add(newRecruitment);
-                _repository.SaveRecruitments(_recruitments);
+                if (newRecruitment != null)
+                {
+                    newRecruitment.RecruitType = RecruitType;
+                    newRecruitment.ScreeningStep = ScreeningStep;
+                    Recruitments.Add(newRecruitment);
+                }
             }
-        }
-        private void RecruitDeleteHandler()
-        {
-            if (_selectedRecruitment != null)
-            {
-                Recruitments.Remove(_selectedRecruitment);
-                _selectedRecruitment = null;
-                _repository.SaveRecruitments(_recruitments);
-            }
+            _repository.SaveRecruitments(_recruitments);
+            NotifyPropertyChanged("Recruitments");
         }
 
-        private void RecruitModifyHandler()
+        private void RecruitModifyHandler(object o)
         {
-            if (SelectedRecruitment == null)
+            if (_selectedRecruitment == null)
             {
                 MessageBox.Show("Not selected item");
                 return;
@@ -254,11 +261,23 @@ namespace JobHunting.ViewModel
 
             ViewMode = false;
             _isModify = true;
-            AddRecruitment = SelectedRecruitment;
 
-            _repository.SaveRecruitments(_recruitments);
+            AddRecruitment = new Recruitment(_selectedRecruitment);
         }
-        private void QuestionAdditionHandler()
+
+        private void RecruitDeleteHandler(object o)
+        {
+            if (_selectedRecruitment != null)
+            {
+                _repository.Delete(_selectedRecruitment);
+                Recruitments.Remove(_selectedRecruitment);
+                _repository.SaveRecruitments(_recruitments);
+                NotifyPropertyChanged("Recruitments");
+            }
+        }
+
+        
+        private void QuestionAdditionHandler(object o)
         {
             if (_selectedRecruitment == null)
             {
@@ -273,7 +292,7 @@ namespace JobHunting.ViewModel
             _repository.SaveRecruitments(_recruitments);
         }
 
-        private void QuestionSaveHandler()
+        private void QuestionSaveHandler(object o)
         {
             if (_selectedRecruitment == null)
             {
@@ -282,7 +301,7 @@ namespace JobHunting.ViewModel
             _repository.SaveRecruitments(_recruitments);
         }
 
-        private void QuestionDeleteHandler()
+        private void QuestionDeleteHandler(object o)
         {
             _repository.SaveRecruitments(_recruitments);
         }
@@ -299,7 +318,7 @@ namespace JobHunting.ViewModel
                 AddRecruitment.EndDate = DateTime.Today;
                 AddRecruitment.StartDate = DateTime.Today;
                 RecruitType = RecruitType.Public;
-                ScreeningStep = ScreeingStep.Paper;
+                ScreeningStep = ScreeningStep.Paper;
             }
         }
 

@@ -7,117 +7,141 @@
     xmlns:model="clr-namespace:JobHunting.Model"
     mc:Ignorable="d" x:Class="JobHunting.MainWindow"
         Width="1024" Height="720" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" AllowsTransparency="True">
-	<Grid x:Name="LayoutRoot">
-		<Border BorderBrush="#FF212121" BorderThickness="1" CornerRadius="1.5" Background="#FF2C2A2A" MouseLeftButtonDown="Border_MouseLeftButtonDown">
-			<Grid>
-				<Button Content="exit" Margin="0,3,9,5" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{DynamicResource MetroButton}" Background="#EE242F57" BorderBrush="White" Foreground="#FFC7BDBD" Click="Button_Click"/>
-			</Grid>
-		</Border>
-		<Grid Margin="10,35,10,10">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="45*"/>
-				<RowDefinition Height="574*"/>
-				<RowDefinition Height="56*"/>
-			</Grid.RowDefinitions>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="204*"/>
-				<ColumnDefinition Width="204*"/>
-				<ColumnDefinition Width="509*"/>
-				<ColumnDefinition Width="93*"/>
-			</Grid.ColumnDefinitions>
-			<Border BorderBrush="#FF212121" BorderThickness="1" Background="#FF857D7D" Grid.ColumnSpan="4" Grid.RowSpan="3"/>
-			<ListView x:Name="RecruitmentListView"
+    <Grid x:Name="LayoutRoot">
+        <Border x:Name="Border" BorderBrush="#FF212121" BorderThickness="1" CornerRadius="1.5" Background="#FF2C2A2A" MouseLeftButtonDown="Border_MouseLeftButtonDown">
+            <Grid x:Name="TitleGrid">
+                <Button x:Name="ExitButton" Content="exit" Margin="0,3,9,5" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{DynamicResource MetroButton}" Background="#EE242F57" BorderBrush="White" Foreground="#FFC7BDBD" Click="Button_Click"/>
+            </Grid>
+        </Border>
+        <Grid x:Name="MainGrid" Margin="10,35,10,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="45*"/>
+                <RowDefinition Height="574*"/>
+                <RowDefinition Height="56*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="204*"/>
+                <ColumnDefinition Width="204*"/>
+                <ColumnDefinition Width="509*"/>
+                <ColumnDefinition Width="93*"/>
+            </Grid.ColumnDefinitions>
+            <Border x:Name="InnerBorder" BorderBrush="#FF212121" BorderThickness="1" Background="#FF857D7D" Grid.ColumnSpan="4" Grid.RowSpan="3"/>
+
+            <!-- Left ListView -->
+            <ListView x:Name="RecruitmentListView"
+                      Style="{DynamicResource RecruitListViewStyle}" 
+                      ItemsSource="{Binding Recruitments}"
+                      SelectedItem="{Binding SelectedRecruitment, Mode=TwoWay}" 
 				      Background="#FF212121"
 				      BorderBrush="#FF212121"
-				      Grid.Row="1" Grid.ColumnSpan="2"
-				      Grid.Column="0" Style="{DynamicResource RecruitListViewStyle}" 
-                      ItemsSource="{Binding Recruitments}"
-                      SelectedItem="{Binding SelectedRecruitment, Mode=TwoWay}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
-			<Grid x:Name="RecruitAddPanel"
+				      Grid.Row="1"
+                      Grid.Column="0"
+                      Grid.ColumnSpan="2"
+                      HorizontalContentAlignment="Stretch" 
+                      VerticalContentAlignment="Stretch"/>
+            <!-- Left ListView End -->
+
+            <Grid x:Name="AddButtonPanel" Grid.ColumnSpan="2">
+                <Button x:Name="AddRecruitmentButton" Content="New"
+            		Visibility="{Binding ViewMode, Converter={StaticResource VisibleConverter}}"
+            		Background="#FF377A55"
+            		Foreground="#FFE0E0E0" 
+            		BorderThickness="0.5" 
+            		BorderBrush="#FF23593B"
+            		Command="{Binding RecruitPrepareAddCommand}" Style="{DynamicResource MetroButton}"/>
+            </Grid>
+            <Grid x:Name="RecruitAddPanel"
                   Height="300" 
                   VerticalAlignment="Top" 
                   Grid.Row="0" Grid.RowSpan="2" 
                   Visibility ="{Binding ViewMode, Converter={StaticResource ReverseVisibleConverter}}"
                   Grid.ColumnSpan="2"
-			      Grid.Column="0">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition/>
-					<ColumnDefinition/>
-				</Grid.ColumnDefinitions>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="41*"/>
-					<RowDefinition Height="209*"/>
-					<RowDefinition Height="50*"/>
-				</Grid.RowDefinitions>
-				<Border BorderThickness="0" Background="#FFB6B6B6" Grid.RowSpan="3" Grid.ColumnSpan="2"/>
-				<Border BorderThickness="0" Background="#FF247469" Grid.ColumnSpan="2">
-					<Label Content="New" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFE8E6E6" FontSize="16"/>
-				</Border>
-				<StackPanel Grid.Row="1" Grid.ColumnSpan="2">
-					<xctk:WatermarkTextBox TextWrapping="Wrap" Watermark="회사명을 적어주세요" Margin="10,5" Height="35" VerticalContentAlignment="Center" Text="{Binding AddRecruitment.Company}"/>
-					<xctk:WatermarkTextBox TextWrapping="Wrap" Watermark="채용사이트를 적어주세요" Margin="10,5" Height="35" VerticalContentAlignment="Center" Text="{Binding AddRecruitment.Site}"/>
-					<Grid Margin="10,5" Height="35">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="96*"/>
-							<ColumnDefinition Width="97*"/>
-						</Grid.ColumnDefinitions>
-						<xctk:DateTimePicker Watermark="시작일" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Margin="0" Value="{Binding AddRecruitment.StartDate}"/>
-						<xctk:DateTimePicker Watermark="종료일" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Margin="0" Value="{Binding AddRecruitment.EndDate}" Grid.Column="1"/>
-					</Grid>
-					<ListBox ItemsSource="{Binding Source={StaticResource RecruitTypeProvider}}"
-						SelectedItem="{Binding RecruitType}" Background="{x:Null}" Foreground="#FFD8D8D8" Margin="5" BorderBrush="{x:Null}" BorderThickness="0">
-						<ListBox.ItemsPanel>
-							<ItemsPanelTemplate>
-								<UniformGrid Columns="4" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-							</ItemsPanelTemplate>
-						</ListBox.ItemsPanel>
-						<ListBox.ItemContainerStyle>
-							<Style TargetType="{x:Type ListBoxItem}">
-								<Setter Property="Template">
-									<Setter.Value>
-										<ControlTemplate TargetType="{x:Type ListBoxItem}">
-											<RadioButton Content="{Binding Converter={StaticResource RecruitTypeEnumConverter}}"
-												IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}}" Foreground="White"/>
-										</ControlTemplate>
-									</Setter.Value>
-								</Setter>
-							</Style>
-						</ListBox.ItemContainerStyle>
-					</ListBox>
-					<ListBox ItemsSource="{Binding Source={StaticResource RecruitStepProvider}}"
-						SelectedItem="{Binding ScreeningStep}" Background="{x:Null}" Foreground="#FFD8D8D8" Margin="5" BorderBrush="{x:Null}" BorderThickness="0">
-						<ListBox.ItemsPanel>
-							<ItemsPanelTemplate>
-								<UniformGrid Columns="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-							</ItemsPanelTemplate>
-						</ListBox.ItemsPanel>
-						<ListBox.ItemContainerStyle>
-							<Style TargetType="{x:Type ListBoxItem}">
-								<Setter Property="Template">
-									<Setter.Value>
-										<ControlTemplate TargetType="{x:Type ListBoxItem}">
-											<RadioButton Content="{Binding Converter={StaticResource RecruitStepEnumConverter}}"
-												IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}}" Foreground="White"/>
-										</ControlTemplate>
-									</Setter.Value>
-								</Setter>
-							</Style>
-						</ListBox.ItemContainerStyle>
-					</ListBox>
-				</StackPanel>
-				<Button Content="저장" Grid.Row="2" Grid.Column="0" Command="{Binding RecruitAdditionCommand}" Style="{DynamicResource MetroButton}" BorderBrush="White" Background="#EE609E7D" Foreground="#FFFFF7F7"/>
-				<Button Content="취소" Grid.Row="2" Grid.Column="1" Command="{Binding RecruitCancelCommand}" Style="{DynamicResource MetroButton}" BorderBrush="White" Background="#EE609E7D" Foreground="#FFFFF7F7"/>
-			</Grid>
-			<Grid x:Name="AddButtonPanel" Grid.ColumnSpan="2">
-				<Button x:Name="AddRecruitmentButton" Content="New"
-					Visibility="{Binding ViewMode, Converter={StaticResource VisibleConverter}}"
-					Background="#FF377A55"
-					Foreground="#FFE0E0E0" 
-					BorderThickness="0.5" 
-					BorderBrush="#FF23593B"
-					Command="{Binding RecruitPrepareAddCommand}" Style="{DynamicResource MetroButton}"/>
-			</Grid>
-			<ListView x:Name="QuestionsListView" 
+			      Grid.Column="0" d:IsHidden="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="41*"/>
+                    <RowDefinition Height="209*"/>
+                    <RowDefinition Height="50*"/>
+                </Grid.RowDefinitions>
+                <Border BorderThickness="0" Background="#FFB6B6B6" Grid.RowSpan="3" Grid.ColumnSpan="2"/>
+                <Border BorderThickness="0" Background="#FF247469" Grid.ColumnSpan="2">
+                    <Label Content="New" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFE8E6E6" FontSize="16"/>
+                </Border>
+                
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+                    <xctk:WatermarkTextBox x:Name="CompanyBox"  TextWrapping="Wrap" Watermark="회사명을 적어주세요" Margin="10,5" Height="35" VerticalContentAlignment="Center" Text="{Binding AddRecruitment.Company, Mode=OneWay}"/>
+                    <xctk:WatermarkTextBox x:Name="SiteBox"  TextWrapping="Wrap" Watermark="채용사이트를 적어주세요" Margin="10,5" Height="35" VerticalContentAlignment="Center" Text="{Binding AddRecruitment.Site, Mode=OneWay}"/>
+                    <Grid Margin="10,5" Height="35">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="96*"/>
+                            <ColumnDefinition Width="97*"/>
+                        </Grid.ColumnDefinitions>
+                        <xctk:DateTimePicker x:Name="StartDateTimePicker"  Watermark="시작일" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Margin="0" Value="{Binding AddRecruitment.StartDate, Mode=OneWay}"/>
+                        <xctk:DateTimePicker x:Name="EndDateTimePicker"  Watermark="종료일" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Margin="0" Value="{Binding AddRecruitment.EndDate, Mode=OneWay}" Grid.Column="1"/>
+                    </Grid>
+                    <ListBox x:Name="RecruitTypeBox"  ItemsSource="{Binding Source={StaticResource RecruitTypeProvider}}"
+            			SelectedItem="{Binding RecruitType}" Background="{x:Null}" Foreground="#FFD8D8D8" Margin="5" BorderBrush="{x:Null}" BorderThickness="0">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="4" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                            <RadioButton Content="{Binding Converter={StaticResource RecruitTypeEnumConverter}}"
+            									IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}}" Foreground="White"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+                    <ListBox x:Name="ScreeningStepBox"  ItemsSource="{Binding Source={StaticResource RecruitStepProvider}}"
+            			SelectedItem="{Binding ScreeningStep}" Background="{x:Null}" Foreground="#FFD8D8D8" Margin="5" BorderBrush="{x:Null}" BorderThickness="0">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                            <RadioButton Content="{Binding Converter={StaticResource RecruitStepEnumConverter}}"
+            									IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}}" Foreground="White"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+                </StackPanel>
+                <Button Content="저장" 
+                        Grid.Row="2" Grid.Column="0"
+                        Command="{Binding RecruitAdditionCommand}" 
+                        Style="{DynamicResource MetroButton}" 
+                        BorderBrush="White" 
+                        Background="#EE609E7D" 
+                        Foreground="#FFFFF7F7">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource RecruitmentConverter}">
+                            <Binding ElementName="CompanyBox" Path="Text" />
+                            <Binding ElementName="SiteBox" Path="Text" />
+                            <Binding ElementName="StartDateTimePicker" Path="Value"/>
+                            <Binding ElementName="EndDateTimePicker" Path="Value"/>
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                </Button>
+                <Button Content="취소" Grid.Row="2" Grid.Column="1" Command="{Binding RecruitCancelCommand}" Style="{DynamicResource MetroButton}" BorderBrush="White" Background="#EE609E7D" Foreground="#FFFFF7F7"/>
+            </Grid>
+            <ListView x:Name="QuestionsListView" 
                       Margin="1" 
                       Grid.Row="0" 
                       Grid.Column="2"
@@ -141,24 +165,24 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-			<Grid x:Name="ContentPanel"
+            <Grid x:Name="ContentPanel"
                   Grid.Row="1" Grid.Column="2" 
                   Grid.ColumnSpan="2" Grid.RowSpan="2"  
                   DataContext="{Binding ElementName=QuestionsListView, Path=SelectedItem}">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="163*"/>
-					<ColumnDefinition Width="38*"/>
-				</Grid.ColumnDefinitions>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="7*"/>
-					<RowDefinition Height="89*"/>
-					<RowDefinition Height="9*"/>
-				</Grid.RowDefinitions>
-				<Border BorderThickness="1" Grid.ColumnSpan="2" Background="#FF009C6B"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="163*"/>
+                    <ColumnDefinition Width="38*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="7*"/>
+                    <RowDefinition Height="89*"/>
+                    <RowDefinition Height="9*"/>
+                </Grid.RowDefinitions>
+                <Border BorderThickness="1" Grid.ColumnSpan="2" Background="#FF009C6B"/>
                 <Viewbox Grid.Row="0" Grid.Column="0" StretchDirection="DownOnly" Stretch="Uniform">
                     <control:EditableTextBlock TextWrapping="Wrap" Text="{Binding Subject, Mode=TwoWay}" Foreground="#FFF7F7F7" FontSize="26.667" Margin="5"/>
                 </Viewbox>
-                
+
 
                 <!--<xctk:RichTextBox Margin="0" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0"
 					VerticalScrollBarVisibility="Auto" Text="{Binding Content}">
@@ -178,17 +202,17 @@
                     <TextBlock Text=" / " TextWrapping="Wrap" Foreground="#FFFFF300" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     <control:EditableTextBlock Text="{Binding PermitCharCount, Mode=TwoWay}" TextWrapping="Wrap" Foreground="#FFFFF300" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </StackPanel>
-                
+
             </Grid>
-			<Button x:Name="AddQuestionButton"
+            <Button x:Name="AddQuestionButton"
                     Content="+" 
                     Grid.Column="3" 
                     Margin="5" 
                     Command="{Binding QuestionAdditionCommand}"
                     IsEnabled="{Binding ViewMode}" Style="{DynamicResource MetroButton}" Background="#EE3E71CB" Foreground="#FFF1F1F1" BorderBrush="White"/>
-			<Button x:Name="ModifyRecruitmentButton" Content="수정" Margin="0" Grid.Row="2" Command="{Binding RecruitModifyCommand}"  IsEnabled="{Binding ViewMode}" Style="{DynamicResource MetroButton}" Background="#EE3AAC78" BorderBrush="White" Foreground="#FFF1F1F1"/>
-			<Button x:Name="DeleteRecruitmentButton" Content="삭제" Margin="0" Grid.Row="2" Grid.Column="1" Command="{Binding RecruitDeleteCommand}"  IsEnabled="{Binding ViewMode}" Style="{DynamicResource MetroButton}" BorderBrush="White" Background="#EEDC3737" Foreground="#FFF1F1F1"/>
-            <Button Content="저장" Grid.Row="2" Grid.ColumnSpan="2" Command="{Binding QuestionSaveCommand}" Grid.Column="2" Style="{DynamicResource MetroButton}" BorderBrush="White" Background="#EED17E1B" Foreground="#FFF1F1F1"/>
-		</Grid>
-	</Grid>
+            <Button x:Name="ModifyRecruitmentButton" Content="수정" Margin="0" Grid.Row="2" Command="{Binding RecruitModifyCommand}"  IsEnabled="{Binding ViewMode}" Style="{DynamicResource MetroButton}" Background="#EE3AAC78" BorderBrush="White" Foreground="#FFF1F1F1"/>
+            <Button x:Name="DeleteRecruitmentButton" Content="삭제" Margin="0" Grid.Row="2" Grid.Column="1" Command="{Binding RecruitDeleteCommand}"  IsEnabled="{Binding ViewMode}" Style="{DynamicResource MetroButton}" BorderBrush="White" Background="#EEDC3737" Foreground="#FFF1F1F1"/>
+            <Button x:Name="SaveButton" Content="저장" Grid.Row="2" Grid.ColumnSpan="2" Command="{Binding QuestionSaveCommand}" Grid.Column="2" Style="{DynamicResource MetroButton}" BorderBrush="White" Background="#EED17E1B" Foreground="#FFF1F1F1"/>
+        </Grid>
+    </Grid>
 </Window>
